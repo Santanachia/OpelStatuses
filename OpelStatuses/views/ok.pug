@@ -1,0 +1,26 @@
+﻿-function prettyDate(dateString){
+    -var date = new Date(dateString);
+    -var d = date.getDate();
+    -if (d < 10) d = '0' + d
+    -var m = date.getMonth() + 1;
+    -if (m < 10) m = '0' + m
+    -var y = date.getFullYear();
+    -return y + '-' + m + '-' + d;
+-}
+
+html
+  head
+    title= title
+  body
+    table
+      thead
+        tr
+          th= 'Status'
+          th= 'data zmiany'
+          th= 'data dostawy'
+      tbody
+        each row in historical
+          tr
+            td= row.item.vehicleDetail.lastVehicleEvent
+            td #{prettyDate(row.item.vehicleDetail.eventCodeUpdateTimestamp)}
+            td #{prettyDate(row.item.vehicleDetail.estimatedDeliveryDateTime)}

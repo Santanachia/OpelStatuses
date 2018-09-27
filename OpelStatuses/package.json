@@ -1,0 +1,32 @@
+{
+  "name": "opel-statuses",
+  "version": "0.0.1",
+  "description": "sprawdza i buduje historiê statusów produkcji Twojego Opla",
+  "main": "server.js",
+  "author": {
+    "name": "Marcin Bielecki",
+    "email": "santanachia@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Santanachia/OpelStatuses.git"
+  },
+  "keywords": [
+    "Opel",
+    "status",
+    "vehicle"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Santanachia/OpelStatuses/issues"
+  },
+  "homepage": "https://github.com/Santanachia/OpelStatuses#readme",
+  "dependencies": {
+    "express": "4.x",
+    "pug": "2.x"
+  },
+  "devDependencies": {
+    "express": "latest",
+    "pug": "latest"
+  }
+}
