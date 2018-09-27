@@ -32,6 +32,9 @@
     <Compile Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="table.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="vehicles\.gitignore" />
     <Content Include="views\error.pug" />
     <Content Include="views\ok.pug" />

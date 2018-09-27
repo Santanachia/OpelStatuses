@@ -58,11 +58,7 @@ app.get('/', (req, res) => {
       resource.on('end', function () {
         current = JSON.parse(current);
         if (current.errorMsg) {
-          var errorExplain = '';
-          switch (current.errorMsg) {
-            case 'The vehicle cannot be found.': errorExplain = 'zdarza się... sprubuj za chwilę'; break;
-          }
-          res.render('error', { title: 'OpelStatuses', errMsg: current.errorMsg, errExp: errorExplain });
+          res.render('error', { title: 'OpelStatuses', errMsg: current.errorMsg });
         }
         else {
           var histData = histDataRead(req.query.vehicle_key);
