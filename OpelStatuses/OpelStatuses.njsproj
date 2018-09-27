@@ -32,6 +32,7 @@
     <Compile Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="vehicles\.gitignore" />
     <Content Include="views\error.pug" />
     <Content Include="views\ok.pug" />
     <Content Include="views\index.pug">
@@ -39,6 +40,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="vehicles\" />
     <Folder Include="views\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->

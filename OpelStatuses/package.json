@@ -1,7 +1,7 @@
 {
   "name": "opel-statuses",
   "version": "0.0.1",
-  "description": "sprawdza i buduje historiê statusów produkcji Twojego Opla",
+  "description": "sprawdza i buduje historiÄ™ statusÃ³w produkcji Twojego Opla",
   "main": "server.js",
   "author": {
     "name": "Marcin Bielecki",
