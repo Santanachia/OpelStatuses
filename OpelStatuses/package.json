@@ -23,10 +23,12 @@
   "homepage": "https://github.com/Santanachia/OpelStatuses#readme",
   "dependencies": {
     "express": "4.x",
-    "pug": "2.x"
+    "pug": "2.x",
+    "mongodb": "3.x"
   },
   "devDependencies": {
     "express": "latest",
-    "pug": "latest"
+    "pug": "latest",
+    "mongodb": "latest"
   }
 }

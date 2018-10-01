@@ -9,21 +9,10 @@ const https = require('https');
 const express = require('express');
 const app = express();
 const fs = require('fs');
-
-function compare(a, b) {
-  if (a.item.vehicleDetail.lastVehicleEvent < b.item.vehicleDetail.lastVehicleEvent)
-    return 1;
-  else if (a.item.vehicleDetail.lastVehicleEvent > b.item.vehicleDetail.lastVehicleEvent)
-    return -1;
-  //jeżeli są dwa identyczne statusy:
-  else {
-    if (a.item.vehicleDetail.eventCodeUpdateTimestamp < b.item.vehicleDetail.eventCodeUpdateTimestamp)
-      return 1;
-    if (a.item.vehicleDetail.eventCodeUpdateTimestamp > b.item.vehicleDetail.eventCodeUpdateTimestamp)
-      return -1;
-    return 0;
-  }
-}
+const MongoClient = require('mongodb').MongoClient;
+var mongoUrl = 'mongodb://localhost:27017/';
+var mongoDb = 'mongodb';
+var mongoCollection = 'OpelStatuses';
 
 function translate(str) {
   if (translations[config.lang][str]) {
@@ -35,19 +24,34 @@ function translate(str) {
   return str;
 }
 
-function histDataWrite(vehicle_key, histData) {
-  fs.writeFile('vehicles/' + vehicle_key + '.json', JSON.stringify(histData), 'utf8', function readFileCallback(err) {
-    if (err) {
-      console.log(err);
-    }
+function histDataWrite(histData) {
+  MongoClient.connect(mongoUrl, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db(mongoDb);
+    dbo.collection(mongoCollection).save({
+      _id: histData[0].item.vehicleDetail.sono,
+      data: histData
+    }, {w: 1}, function (err, res) {
+      if (err) throw err;
+      db.close();
+    });
   });
 }
 
-function histDataRead(vehicle_key) {
+function histDataRead(sono) {
   var histData = [];
-  if (fs.existsSync('vehicles/' + vehicle_key + '.json') && (histData = fs.readFileSync('vehicles/' + vehicle_key + '.json', { encoding: 'utf8' }))) {
-    histData = JSON.parse(histData);
-  }
+  MongoClient.connect(mongoUrl, function (err, db) {
+  //if (fs.existsSync('vehicles/' + sono + '.json') && (histData = fs.readFileSync('vehicles/' + sono + '.json', { encoding: 'utf8' }))) {
+  //  histData = JSON.parse(histData);
+  //}
+    if (err) throw err;
+    var dbo = db.db(mongoDb);
+    dbo.collection(mongoCollection).find({ _id: sono }).toArray(function (err, result) {
+      if (err) throw err;
+      histData = result[0].data;
+      db.close();
+    });
+  });
   return histData;
 }
 
@@ -81,11 +85,11 @@ app.get('/', (req, res) => {
           var histData = histDataRead(current.item.vehicleDetail.sono);
           if (histData === undefined || histData.length === 0) {
             histData = [current];
-            histDataWrite(current.item.vehicleDetail.sono, histData);
+            histDataWrite(histData);
           }
           else if (current.item.vehicleDetail.lastVehicleEvent !== histData[0].item.vehicleDetail.lastVehicleEvent || current.item.vehicleDetail.eventCodeUpdateTimestamp !== histData[0].item.vehicleDetail.eventCodeUpdateTimestamp) {
             histData.splice(0, 0, current);
-            histDataWrite(current.item.vehicleDetail.sono, histData);
+            histDataWrite(histData);
           }
           histData[0].item.vehicleDetail.tapicerka = translate(histData[0].item.vehicleDetail.trim);
           histData[0].item.vehicleDetail.options = [];
