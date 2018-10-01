@@ -25,33 +25,49 @@ function translate(str) {
 }
 
 function histDataWrite(histData) {
-  MongoClient.connect(mongoUrl, function (err, db) {
-    if (err) throw err;
-    var dbo = db.db(mongoDb);
-    dbo.collection(mongoCollection).save({
-      _id: histData[0].item.vehicleDetail.sono,
-      data: histData
-    }, {w: 1}, function (err, res) {
-      if (err) throw err;
-      db.close();
-    });
-  });
+  //MongoClient.connect(mongoUrl, { useNewUrlParser: true }, function (err, db) {
+  //  if (err) throw err;
+  //  var dbo = db.db(mongoDb);
+  //  for (var i = 0; i < histData.length; i++) {
+  //    dbo.collection(mongoCollection).updateOne(
+  //      { // klucz
+  //        _id: histData[i].item.vehicleDetail.sono + '_' + histData[i].item.vehicleDetail.lastVehicleEvent
+  //      },
+  //      { // dane do zapisu
+  //        $set: {
+  //          _id: histData[i].item.vehicleDetail.sono + '_' + histData[i].item.vehicleDetail.lastVehicleEvent,
+  //          item: histData[i].item
+  //        }
+  //      },
+  //      { // opcje
+  //        upsert: true
+  //      },
+  //      function (err, res) { // callback
+  //        if (err) throw err;
+  //        db.close();
+  //      }
+  //    );
+  //  }
+  //});
 }
 
 function histDataRead(sono) {
   var histData = [];
-  MongoClient.connect(mongoUrl, function (err, db) {
   //if (fs.existsSync('vehicles/' + sono + '.json') && (histData = fs.readFileSync('vehicles/' + sono + '.json', { encoding: 'utf8' }))) {
   //  histData = JSON.parse(histData);
   //}
+  MongoClient.connect(mongoUrl, { useNewUrlParser: true }, function (err, db) {
     if (err) throw err;
     var dbo = db.db(mongoDb);
-    dbo.collection(mongoCollection).find({ _id: sono }).toArray(function (err, result) {
+    var re = new RegExp('^' + sono, 'gi')
+    dbo.collection(mongoCollection).find({ _id: re }).toArray(function (err, result) {
       if (err) throw err;
-      histData = result[0].data;
+      histData = result;
+      console.log(histData);
       db.close();
     });
   });
+  console.log(histData);
   return histData;
 }
 
@@ -91,6 +107,7 @@ app.get('/', (req, res) => {
             histData.splice(0, 0, current);
             histDataWrite(histData);
           }
+            histDataWrite(histData);
           histData[0].item.vehicleDetail.tapicerka = translate(histData[0].item.vehicleDetail.trim);
           histData[0].item.vehicleDetail.options = [];
           if (histData[0].item.vehicleDetail.optionCodes) {
