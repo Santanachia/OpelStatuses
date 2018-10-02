@@ -10,21 +10,6 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 
-function compare(a, b) {
-  if (a.item.vehicleDetail.lastVehicleEvent < b.item.vehicleDetail.lastVehicleEvent)
-    return 1;
-  else if (a.item.vehicleDetail.lastVehicleEvent > b.item.vehicleDetail.lastVehicleEvent)
-    return -1;
-  //jeżeli są dwa identyczne statusy:
-  else {
-    if (a.item.vehicleDetail.eventCodeUpdateTimestamp < b.item.vehicleDetail.eventCodeUpdateTimestamp)
-      return 1;
-    if (a.item.vehicleDetail.eventCodeUpdateTimestamp > b.item.vehicleDetail.eventCodeUpdateTimestamp)
-      return -1;
-    return 0;
-  }
-}
-
 function translate(str) {
   if (translations[config.lang][str]) {
     return translations[config.lang][str];
@@ -73,11 +58,12 @@ app.get('/', (req, res) => {
       resource.on('end', function () {
         current = JSON.parse(current);
         if (current.errorMsg) {
-          res.render('error', { title: 'OpelStatuses', errMsg: current.errorMsg });
+          res.render('error', { errMsg: current.errorMsg });
         }
         else {
           var now = new Date();
           var lastModified = (now.getHours() < 10 ? '0' : '') + now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+
           var histData = histDataRead(current.item.vehicleDetail.sono);
           if (histData === undefined || histData.length === 0) {
             histData = [current];
@@ -87,6 +73,7 @@ app.get('/', (req, res) => {
             histData.splice(0, 0, current);
             histDataWrite(current.item.vehicleDetail.sono, histData);
           }
+
           histData[0].item.vehicleDetail.tapicerka = translate(histData[0].item.vehicleDetail.trim);
           histData[0].item.vehicleDetail.options = [];
           if (histData[0].item.vehicleDetail.optionCodes) {
@@ -94,11 +81,11 @@ app.get('/', (req, res) => {
               histData[0].item.vehicleDetail.options.push({ key: histData[0].item.vehicleDetail.optionCodes[i], name: translate(histData[0].item.vehicleDetail.optionCodes[i]) });
             }
           }
-          res.render('ok', { title: 'OpelStatuses', historical: histData, lastModified: lastModified });
+          res.render('ok', { historical: histData, lastModified: lastModified });
         }
       });
     }).on('error', function (e) {
-      res.render('error', { title: 'OpelStatuses', errMsg: e.message });
+      res.render('error', { errMsg: e.message });
     });
 
   }

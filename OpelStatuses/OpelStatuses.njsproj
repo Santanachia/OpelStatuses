@@ -32,15 +32,12 @@
     <Compile Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="table.css">
-      <SubType>Code</SubType>
-    </Content>
+    <Content Include="table.css" />
     <Content Include="vehicles\.gitignore" />
     <Content Include="views\error.pug" />
+    <Content Include="views\layout.pug" />
     <Content Include="views\ok.pug" />
-    <Content Include="views\index.pug">
-      <SubType>Code</SubType>
-    </Content>
+    <Content Include="views\index.pug" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="vehicles\" />

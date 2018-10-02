@@ -1,23 +1,12 @@
-﻿-function prettyDate(dateString){
-  -if (!dateString) {return null}
-  -var date = new Date(dateString);
-  -var d = date.getDate();
-  -if (d < 10) d = '0' + d
-  -var m = date.getMonth() + 1;
-  -if (m < 10) m = '0' + m
-  -var y = date.getFullYear();
-  -return y + '-' + m + '-' + d;
--}
+﻿
+extends layout.pug
 
--var sd = {20: 'Przyjęcie zamówienia', 21: 'Przetwarzanie zamówienia', 25: 'Ustawianie zamówienia do produkcji', 30: 'Oczekiwanie na zwolnienie do produkcji', 32: 'Zwolnienie do produkcji', 33: 'Przyjęcie do produkcji przez fabrykę', 35: 'Samochód na linii produkcyjnej', 38: 'Samochód wyprodukowany', 40: 'Samochód przekazany do sprzedarzy', 42: 'Samochód opuścił bamy fabryki', 43: 'Samochód na centralnym składzie dystrybucyjnym', 44: 'Samochód wysłany do Polski', 48: 'Samochód na składzie w Polsce', 49: 'Samochód wysłany do dealera', 58: 'Samochód dojechał do dealera', 60: 'Samochód sprzedany'}
+block append head
+      meta(http-equiv="refresh", content="3600")
+      style
+        include ..\table.css
 
-html
-  head
-    title= title
-    <meta http-equiv="refresh" content="3600">
-    style
-      include ..\table.css
-  body
+block body
     div.divTable
       div.divTableBody
         div.divTableRow

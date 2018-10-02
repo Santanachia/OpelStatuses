@@ -1,0 +1,24 @@
+﻿
+-function prettyDate(dateString){
+  -if (!dateString) {return null}
+  -var date = new Date(dateString);
+  -var d = date.getDate();
+  -if (d < 10) d = '0' + d
+  -var m = date.getMonth() + 1;
+  -if (m < 10) m = '0' + m
+  -var y = date.getFullYear();
+  -return y + '-' + m + '-' + d;
+-}
+
+-var sd = {20: 'Przyjęcie zamówienia', 21: 'Przetwarzanie zamówienia', 25: 'Ustawianie zamówienia do produkcji', 30: 'Oczekiwanie na zwolnienie do produkcji', 32: 'Zwolnienie do produkcji', 33: 'Przyjęcie do produkcji przez fabrykę', 35: 'Samochód na linii produkcyjnej', 38: 'Samochód wyprodukowany', 40: 'Samochód przekazany do sprzedarzy', 42: 'Samochód opuścił bamy fabryki', 43: 'Samochód na centralnym składzie dystrybucyjnym', 44: 'Samochód wysłany do Polski', 48: 'Samochód na składzie w Polsce', 49: 'Samochód wysłany do dealera', 58: 'Samochód dojechał do dealera', 60: 'Samochód sprzedany'}
+
+doctype html
+html
+  head
+    block head
+      title 'OpelStatuses'
+      meta(charset='UTF-8')
+      link(rel="icon", type="image/png", sizes="32x32", href="http://dixi-car.pl/img/favicon/favicon-32x32.png")
+      link(rel="icon", type="image/png", sizes="16x16", href="http://dixi-car.pl/img/favicon/favicon-16x16.png")
+  body
+    block body

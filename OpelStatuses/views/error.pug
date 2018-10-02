@@ -1,7 +1,9 @@
-﻿html
-  head
-    title= title
-    <meta http-equiv="refresh" content="5">
-  body
+﻿
+extends layout.pug
+
+block append head
+      meta(http-equiv="refresh", content="5")
+
+block body
     h1='Błąd:'
     p= errMsg
