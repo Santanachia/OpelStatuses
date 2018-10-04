@@ -4,6 +4,7 @@ table.blue {
   background-color: #EEEEEE;
   text-align: left;
   border-collapse: collapse;
+  margin: 8px
 }
 
 table.blue td, table.blue th {

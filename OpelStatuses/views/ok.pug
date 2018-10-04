@@ -7,68 +7,71 @@ block append head
         include ..\table.css
 
 block body
-    div.divTable
-      div.divTableBody
-        div.divTableRow
-          div.divTableCell
-            table.blue
-              thead
-                tr
-                  th(colspan="8")= historical[0].item.vehicleDetail.make + ' ' + historical[0].item.vehicleDetail.modelDescription + ' RM: ' + historical[0].item.vehicleDetail.modelYearSuffix
-              tbody
-                tr
-                  td= 'data rejestracji'
-                  td #{prettyDate(historical[0].item.registrationDate)}
-                  td= 'data pierwszej rejestacji'
-                  td #{prettyDate(historical[0].item.vehicleDetail.dateFirstRegistered)}
-                  td= 'numer rejestracyjny'
-                  td= historical[0].item.registrationMark
-                  td= 'VIN'
-                  td= historical[0].item.vehicleDetail.vin
-            br
-            table.blue
-              thead
-                tr
-                  th= 'Status'
-                  th= 'data zmiany'
-                  th= 'data dostawy'
-                  th= 'opis statusu'
-              tbody
-                each row in historical
-                  tr
-                    td= row.item.vehicleDetail.lastVehicleEvent
-                    td #{prettyDate(row.item.vehicleDetail.eventCodeUpdateTimestamp)}
-                    td #{prettyDate(row.item.vehicleDetail.estimatedDeliveryDateTime)}
-                    td #{sd[row.item.vehicleDetail.lastVehicleEvent]}
-            p= 'ostatnia aktualizacja: ' + lastModified
-          div.divTableCell
-            table.blue
-              tbody
-                tr
-                  td= 'kolor'
-                  td= historical[0].item.vehicleDetail.colour
-                tr
-                  td= 'silnik'
-                  td= historical[0].item.vehicleDetail.engineCode + ': ' + historical[0].item.vehicleDetail.engineDescription
-                tr
-                  td= 'tapicerka'
-                  td= historical[0].item.vehicleDetail.tapicerka
-                tr
-                  td= 'OnStar'
-                  td #{historical[0].item.vehicleDetail.onStarEquipped ? '✓' : '✗'}
-          div.divTableCell
-            table.blue
-              thead
-                tr
-                  th= 'Wyposażenie'
-                  th
-                    span#show(onclick="document.getElementById('options').style.display = ''; document.getElementById('show').style.display = 'none'; document.getElementById('hide').style.display = '';") pokaż
-                    span#hide(onclick="document.getElementById('options').style.display = 'none'; document.getElementById('show').style.display = ''; document.getElementById('hide').style.display = 'none';", style={display: 'none'}) ukryj
-              tbody#options(style={display: 'none'})
-                tr
-                  th= 'kod'
-                  th= 'opis'
-                each row in historical[0].item.vehicleDetail.options
-                  tr
-                    td= row.key
-                    td= row.name
+
+  table.blue
+    thead
+      tr
+        th= details.make + ' ' + details.modelDescription
+        th= 'data rejestracji'
+        th= 'data pierwszej rejestacji'
+        th= 'numer rejestracyjny'
+        th= 'VIN'
+        th= 'kolor'
+        th= 'silnik'
+        th= 'tapicerka'
+        th= 'OnStar'
+    tbody
+      tr
+        td= 'RM: ' + details.modelYearSuffix
+        td= details.registrationDate
+        td= details.dateFirstRegistered
+        td= details.registrationMark
+        td= details.vin
+        td= details.colour
+        td= details.engineCode + ': ' + details.engineDescription
+        td= details.tapicerka
+        td= details.onStarEquipped
+
+  table.blue(style='float:left')
+    caption(align='bottom')= 'ostatnia aktualizacja:' + lastModified
+    thead
+      tr
+        th Etap
+        th(colspan=2) Status
+        th data zmiany
+          br
+          .
+            statusu
+        th prognozowana
+          br
+          .
+            data dostawy
+    tbody
+      each stage in statuses
+        each status, i in stage.statuses
+          tr
+            - if (0 === i)
+              - if (stage.statuses.length > 0)
+                td(rowspan=stage.statuses.length)= stage.stage
+              - else
+                td= stage.stage
+            td= status.status
+            td= status.description
+            td= status.eventCodeUpdateTimestamp
+            td= status.estimatedDeliveryDateTime
+
+  table.blue(style='float:left')
+    thead
+      tr
+        th= 'Wyposażenie'
+        th
+          span#show(onclick="document.getElementById('options').style.display = ''; document.getElementById('show').style.display = 'none'; document.getElementById('hide').style.display = '';") pokaż
+          span#hide(onclick="document.getElementById('options').style.display = 'none'; document.getElementById('show').style.display = ''; document.getElementById('hide').style.display = 'none';", style={display: 'none'}) ukryj
+    tbody#options(style={display: 'none'})
+      tr
+        th= 'kod'
+        th= 'opis'
+      each row in historical[0].item.vehicleDetail.options
+        tr
+          td= row.key
+          td= row.name

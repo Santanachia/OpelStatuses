@@ -81,7 +81,26 @@ app.get('/', (req, res) => {
               histData[0].item.vehicleDetail.options.push({ key: histData[0].item.vehicleDetail.optionCodes[i], name: translate(histData[0].item.vehicleDetail.optionCodes[i]) });
             }
           }
-          res.render('ok', { historical: histData, lastModified: lastModified });
+
+          res.render('ok', {
+            historical: [histData[0]],
+            lastModified: lastModified,
+            statuses: fillStages(histData),
+            details: {
+              make: histData[0].item.vehicleDetail.make,
+              modelDescription: histData[0].item.vehicleDetail.modelDescription,
+              modelYearSuffix: histData[0].item.vehicleDetail.modelYearSuffix,
+              registrationDate: prettyDate(histData[0].item.registrationDate),
+              dateFirstRegistered: prettyDate(histData[0].item.vehicleDetail.dateFirstRegistered),
+              registrationMark: histData[0].item.registrationMark,
+              vin: histData[0].item.vehicleDetail.vin,
+              colour: histData[0].item.vehicleDetail.colour,
+              engineCode: histData[0].item.vehicleDetail.engineCode,
+              engineDescription: histData[0].item.vehicleDetail.engineDescription,
+              tapicerka: histData[0].item.vehicleDetail.tapicerka,
+              onStarEquipped: histData[0].item.vehicleDetail.onStarEquipped ? '✓' : '✗'
+            }
+          });
         }
       });
     }).on('error', function (e) {
@@ -808,3 +827,85 @@ const translations = {
     ZQ3: 'Pakiety "Asystenta Kierowcy 2"',
   }
 };
+
+function fillStages(histData) {
+  var statuses = [
+    { stage: 'Zamawianie', statuses: [] },
+    { stage: 'Ustawianie produkcji', statuses: [] },
+    { stage: 'Produkcja', statuses: [] },
+    { stage: 'Transport', statuses: [] },
+    { stage: 'Sprzedaż', statuses: [] }
+  ];
+
+  for (var i = 0; i < histData.length; i++) {
+    switch (parseInt(histData[i].item.vehicleDetail.lastVehicleEvent)) {
+      case 20:
+        statuses[0].statuses.push({ status: 20, description: 'Przyjęcie zamówienia', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 21:
+        statuses[0].statuses.push({ status: 21, description: 'Przetwarzanie zamówienia', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 25:
+        statuses[1].statuses.push({ status: 25, description: 'Ustawianie zamówienia do produkcji', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 30:
+        statuses[1].statuses.push({ status: 30, description: 'Oczekiwanie na zwolnienie do produkcji', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 32:
+        statuses[1].statuses.push({ status: 32, description: 'Zwolnienie do produkcji', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 33:
+        statuses[2].statuses.push({ status: 33, description: 'Przyjęcie do produkcji przez fabrykę', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 35:
+        statuses[2].statuses.push({ status: 35, description: 'Samochód na linii produkcyjnej', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 38:
+        statuses[2].statuses.push({ status: 38, description: 'Samochód wyprodukowany', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 40:
+        statuses[2].statuses.push({ status: 40, description: 'Samochód przekazany do sprzedarzy', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 42:
+        statuses[3].statuses.push({ status: 42, description: 'Samochód opuścił bamy fabryki', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 43:
+        statuses[3].statuses.push({ status: 43, description: 'Samochód na centralnym składzie dystrybucyjnym', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 44:
+        statuses[3].statuses.push({ status: 44, description: 'Samochód wysłany do Polski', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 48:
+        statuses[3].statuses.push({ status: 48, description: 'Samochód na składzie w Polsce', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 49:
+        statuses[3].statuses.push({ status: 49, description: 'Samochód wysłany do dealera', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 58:
+        statuses[4].statuses.push({ status: 58, description: 'Samochód dojechał do dealera', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      case 60:
+        statuses[4].statuses.push({ status: 60, description: 'Samochód sprzedany', eventCodeUpdateTimestamp: prettyDate(histData[i].item.vehicleDetail.eventCodeUpdateTimestamp), estimatedDeliveryDateTime: prettyDate(histData[i].item.vehicleDetail.estimatedDeliveryDateTime) });
+        break;
+      default:
+        console.log(histData[i].item.vehicleDetail.lastVehicleEvent);
+        break;
+    }
+  }
+  statuses.reverse();
+
+  return statuses;
+
+}
+
+function prettyDate(dateString) {
+  if (!dateString) { return null }
+  var date = new Date(dateString);
+  var d = date.getDate();
+  if (d < 10) d = '0' + d;
+  var m = date.getMonth() + 1;
+  if (m < 10) m = '0' + m;
+  var y = date.getFullYear();
+
+  return y + '-' + m + '-' + d;
+}
