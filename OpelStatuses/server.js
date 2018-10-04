@@ -10,16 +10,6 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 
-function translate(str) {
-  if (translations[config.lang][str]) {
-    return translations[config.lang][str];
-  }
-  else if (config.lang !== 'en' && translations.en[str]) {
-    return translations.en[str];
-  }
-  return str;
-}
-
 function histDataWrite(vehicle_key, histData) {
   fs.writeFile('vehicles/' + vehicle_key + '.json', JSON.stringify(histData), 'utf8', function readFileCallback(err) {
     if (err) {
@@ -74,16 +64,7 @@ app.get('/', (req, res) => {
             histDataWrite(current.item.vehicleDetail.sono, histData);
           }
 
-          histData[0].item.vehicleDetail.tapicerka = translate(histData[0].item.vehicleDetail.trim);
-          histData[0].item.vehicleDetail.options = [];
-          if (histData[0].item.vehicleDetail.optionCodes) {
-            for (var i = 0; i < histData[0].item.vehicleDetail.optionCodes.length; i++) {
-              histData[0].item.vehicleDetail.options.push({ key: histData[0].item.vehicleDetail.optionCodes[i], name: translate(histData[0].item.vehicleDetail.optionCodes[i]) });
-            }
-          }
-
           res.render('ok', {
-            historical: [histData[0]],
             lastModified: lastModified,
             statuses: fillStages(histData),
             details: {
@@ -97,9 +78,10 @@ app.get('/', (req, res) => {
               colour: histData[0].item.vehicleDetail.colour,
               engineCode: histData[0].item.vehicleDetail.engineCode,
               engineDescription: histData[0].item.vehicleDetail.engineDescription,
-              tapicerka: histData[0].item.vehicleDetail.tapicerka,
+              tapicerka: translate(histData[0].item.vehicleDetail.trim),
               onStarEquipped: histData[0].item.vehicleDetail.onStarEquipped ? '✓' : '✗'
-            }
+            },
+            options: translateOptions(histData[0].item.vehicleDetail.optionCodes)
           });
         }
       });
@@ -827,6 +809,26 @@ const translations = {
     ZQ3: 'Pakiety "Asystenta Kierowcy 2"',
   }
 };
+
+function translate(str) {
+  if (translations[config.lang][str]) {
+    return translations[config.lang][str];
+  }
+  else if (config.lang !== 'en' && translations.en[str]) {
+    return translations.en[str];
+  }
+  return str;
+}
+
+function translateOptions(optionCodes) {
+  var options = [];
+  if (optionCodes) {
+    for (var i = 0; i < optionCodes.length; i++) {
+      options.push({ key: optionCodes[i], name: translate(optionCodes[i]) });
+    }
+  }
+  return options;
+}
 
 function fillStages(histData) {
   var statuses = [
