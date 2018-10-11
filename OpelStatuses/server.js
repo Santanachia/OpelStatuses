@@ -75,11 +75,10 @@ app.get('/', (req, res) => {
               dateFirstRegistered: prettyDate(histData[0].item.vehicleDetail.dateFirstRegistered),
               registrationMark: histData[0].item.registrationMark,
               vin: histData[0].item.vehicleDetail.vin,
-              colour: histData[0].item.vehicleDetail.colour,
-              engineCode: histData[0].item.vehicleDetail.engineCode,
-              engineDescription: histData[0].item.vehicleDetail.engineDescription,
-              tapicerka: translate(histData[0].item.vehicleDetail.trim),
-              onStarEquipped: histData[0].item.vehicleDetail.onStarEquipped ? '✓' : '✗'
+              colour: getColour(histData[0].item.vehicleDetail.optionCodes, histData[0].item.vehicleDetail.colour),
+              engine: translate(histData[0].item.vehicleDetail.engineCode),
+              tapicerka: translate(histData[0].item.vehicleDetail.trim).replace('Tapicerka ', ''),
+              onStarEquipped: histData[0].item.vehicleDetail.onStarEquipped ? '✓' : '<span style="color:darkred">✗</span>'
             },
             options: translateOptions(histData[0].item.vehicleDetail.optionCodes)
           });
@@ -386,22 +385,22 @@ const translations = {
     'KTA': 'AUDIO INTERFACE',
     'KTB': 'AUDIO INTERFACE - WIRELESS',
     'KTM': 'KEY - PRIMARY FOLDABLE, ADDITIONAL RIGID',
-    'L2I': 'ENGINE - PETROL, 4 CYL, 1.4L, MFI, L4, DOHC, FAM O, 74 KW, E85 MAX, GME',
-    'LBS': 'ENGINE - DIESEL, 4 CYL, 2.0L, L4, CPI, TURBO, HO, DOHC, 121KW',
-    'LBX': 'ENGINE - DIESEL, 4 CYL, 2.0L, L4, CRI, TURBO VGT, DOHC, 96KW',
-    'LBY': 'ENGINE - DIESEL, 4 CYL, 2.0L, L4, CRI, TWIN TURBO, DOHC, 140 KW,',
-    'LDD': 'ENGINE - PETROL, 4 CYL, 1.4L, MFI, DOHC, VARIABLE CAMSHAFT PHASING, FAM 0',
-    'LDE': 'ENGINE - PETROL, 4 CYL, 1.6L, MFI, DOHC, VVT, VARIABLE CAMSHAFT PHASING, VARIABLE INTAKE MODULE (VIM)',
-    'LED': 'ENGINE - PETROL, 4 CYL, 1.6L, MFI, DOHC, VVT, VARIABLE INTAKE MODULE (VIM), E85 MAX',
+    'L2I': 'ENGINE - PETROL, 4 CYL, 1.4L, MFI, L4, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, FAM O, 74 KW, E85 MAX, GME',
+    'LBS': 'ENGINE - DIESEL, 4 CYL, 2.0L, L4, CPI, TURBO, HO, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, 121KW',
+    'LBX': 'ENGINE - DIESEL, 4 CYL, 2.0L, L4, <a target="_blank" href="https://en.wikipedia.org/wiki/Common_rail">CRI</a>, TURBO VGT, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, 96KW',
+    'LBY': 'ENGINE - DIESEL, 4 CYL, 2.0L, L4, <a target="_blank" href="https://en.wikipedia.org/wiki/Common_rail">CRI</a>, TWIN TURBO, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, 140 KW,',
+    'LDD': 'ENGINE - PETROL, 4 CYL, 1.4L, MFI, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, VARIABLE CAMSHAFT PHASING, FAM 0',
+    'LDE': 'ENGINE - PETROL, 4 CYL, 1.6L, MFI, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, VVT, VARIABLE CAMSHAFT PHASING, VARIABLE INTAKE MODULE (VIM)',
+    'LED': 'ENGINE - PETROL, 4 CYL, 1.6L, MFI, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, VVT, VARIABLE INTAKE MODULE (VIM), E85 MAX',
     'LHD': 'VEHICLE DRIVE - LEFTHAND DRIVE',
-    'LLU': 'ENGINE - PETROL, 4 CYL, 1.6L, MFI, DOHC, TURBO, PT-JV, 132KW',
-    'LPL': 'ENGINE - DIESEL, 4 CYL, 1.7L, L4, CRI, TURBO-HIGH, HO, DOHC',
-    'LPV': 'ENGINE - DIESEL, 4 CYL, 1.7L, L4, CRI, TURBO-HIGH, HO, DOHC81KW',
-    'LSF': 'ENGINE - DIESEL, 4 CYL, 1.3L, CRI, DOHC, TURBO-VGT',
-    'LUD': 'ENGINE - DIESEL, 4 CYL, 1.7L, L4, CRI, DOHC, VGT, 96KW',
-    'LUE': 'ENGINE - ENGINE DIESEL, 4 CYL, 1.7L,L4, CRI, DOHC, VGT, 81KW',
-    'LUJ': 'ENGINE - PETROL, 4 CYL, L4, 1.4L, MFI, DOHC, TURBO HO, ALUM, GME',
-    'LUV': 'ENGINE - PETROL, 4 CYL, 1.4L, MFI, DOHC, TURBO, VVT, ALUM, GME, E85 MAX',
+    'LLU': 'ENGINE - PETROL, 4 CYL, 1.6L, MFI, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, TURBO, PT-JV, 132KW',
+    'LPL': 'ENGINE - DIESEL, 4 CYL, 1.7L, L4, <a target="_blank" href="https://en.wikipedia.org/wiki/Common_rail">CRI</a>, TURBO-HIGH, HO, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>',
+    'LPV': 'ENGINE - DIESEL, 4 CYL, 1.7L, L4, <a target="_blank" href="https://en.wikipedia.org/wiki/Common_rail">CRI</a>, TURBO-HIGH, HO, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a> 81KW',
+    'LSF': 'ENGINE - DIESEL, 4 CYL, 1.3L, <a target="_blank" href="https://en.wikipedia.org/wiki/Common_rail">CRI</a>, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, TURBO-<a target="_blank" href="https://en.wikipedia.org/wiki/Variable-geometry_turbocharger">VGT</a>',
+    'LUD': 'ENGINE - DIESEL, 4 CYL, 1.7L, L4, <a target="_blank" href="https://en.wikipedia.org/wiki/Common_rail">CRI</a>, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, <a target="_blank" href="https://en.wikipedia.org/wiki/Variable-geometry_turbocharger">VGT</a>, 96KW',
+    'LUE': 'ENGINE - ENGINE DIESEL, 4 CYL, 1.7L,L4, <a target="_blank" href="https://en.wikipedia.org/wiki/Common_rail">CRI</a>, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, <a target="_blank" href="https://en.wikipedia.org/wiki/Variable-geometry_turbocharger">VGT</a>, 81KW',
+    'LUJ': 'ENGINE - PETROL, 4 CYL, L4, 1.4L, MFI, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, TURBO HO, ALUM, GME',
+    'LUV': 'ENGINE - PETROL, 4 CYL, 1.4L, MFI, <a target="_blank" href="https://en.wikipedia.org/wiki/Overhead_camshaft#Dual_overhead_camshaft">DOHC</a>, TURBO, VVT, ALUM, GME, E85 MAX',
     'M26': 'GEARBOX - MAN 5 SPD, OPEL, 65 MM, 1.96 2ND, 1.323 3RD, 0.946 4TH, 0.756 5TH, F17 (WR)',
     'M36': 'TRANSMISSION - AUTO 6 SPD, AISIN-WARNER, A6-F40, ELECTRONIC (ACTIVE SELECT)',
     'M7Q': 'GEARBOX - MAN 5 SPD, 65 MM, 3.727 1ST, 2.136 2ND, 1.323 3RD, 0,892 4TH ,0.674 5TH, (F17 ER)',
@@ -717,7 +716,7 @@ const translations = {
     LP4B: 'Pakiet Enjoy Biznes Plus',
     LP4E: 'Pakiet Kierowcy Plus',
     LPZ9: 'Pakiet "Kierowcy Plus"',
-    LVL: 'D 4 CYL 1.6L CRI,DOHC,VGT',
+    LVL: 'DIESEL, 4 CYL, 1.6L, <a target="_blank" href="https://pl.wikipedia.org/wiki/Common_rail">CRI</a>, <a target="_blank" href="https://pl.wikipedia.org/wiki/OHC#DOHC">DOHC</a>, <a target="_blank" href="https://pl.wikipedia.org/wiki/Turbospr%C4%99%C5%BCarka_o_zmiennej_geometrii_%C5%82opatek">VGT</a>',
     MCY: 'Wejście USB',
     MDB: 'Czarna listwa boczna zamiast chromowanej',
     MDQ: 'Chromowana listwa wzdłuż górnej linii okien',
@@ -770,12 +769,14 @@ const translations = {
     UD5: 'Czujniki parkowania przód i tył',
     UD7: 'Czujniki parkowania - tył',
     UDC: 'Wyświetlacz graficzny pomiędzy zegarami',
-    UDD: 'Wyświetlacz pomiędzy zegarami - komputer pokładowy 4,2", Zintegrowana funkcja komend głosowych',
+    UDD: 'Wyświetlacz pomiędzy zegarami - komputer pokładowy 4,2"<br />\
+Zintegrowana funkcja komend głosowych',
     UDQ: 'Ostrzeżenie o martwym polu w lusterkach',
     UE1: 'System OnStar',
     UE4: 'Wskaźnik odległości od poprzedzającego pojazdu',
     UEU: 'Ostrzeganie przed kolizją z poprzedzającym pojazdem',
-    UFQ: 'System parkowania "Advanced Park Assist II", Czujniki parkowania na przód i tył',
+    UFQ: 'System parkowania "Advanced Park Assist II"<br />\
+Czujniki parkowania na przód i tył',
     UGE: 'Tylne lampy LED',
     UH5: 'System przypominania o zapięciu pasów z tyłu',
     UHG: 'Ostrzeżenie o niezapięciu pasa kierowcy',
@@ -786,7 +787,8 @@ const translations = {
     UJC: 'Przycisk zmiany trybu jazdy Sport',
     UJM: 'Czujnik ćiśnienia w oponach z ręczną kalibracją',
     UK4: 'Funkcja wyświetlania ciścnienia w podziale na poszczególne koła',
-    US3: 'Antena "płetwa rekina", czarna (w przypadku zamówienia z UE1 - w kolorze nadwozia), Fabryczny system nawigacji (mapa europy)',
+    US3: 'Antena "płetwa rekina", czarna (w przypadku zamówienia z UE1 - w kolorze nadwozia)<br />\
+Fabryczny system nawigacji (mapa europy)',
     USS: '2 wejścia USB na tylnej części konsoli centralnej',
     UTJ: 'Alarm',
     UVC: 'Kamera cofania',
@@ -794,12 +796,16 @@ const translations = {
     UVG: 'Automatyczne sterowanie światłami drogowymi',
     UVX: 'Rozpoznawanie znaków ograniczenia prędkości i zakazu wyprzedzania',
     UY4: 'Nawigacja dla R 4.0 IntelliLink',
-    UZ6: '6 głośników, 8-calowy ekran dotykowy',
-    V6C: 'Ozdobne relingi dachowe, czarne',
+    UZ6: '6 głośników<br />\
+8-calowy ekran dotykowy',
+    V6C: 'Ozdobne rengi dachowe, czarne',
     V6D: 'Ozdobne relingi dachowe chromowane',
     VQ9: 'Hak holowniczy',
     VRi: 'Aktywne przesłony grilla',
-    WDH: 'Pakiet "Sport OPC" (Przedni zderzak OPC, Tylny zderzak OPC, Spojlery boczne OPC w kolorze nadwozia)',
+    WDH: 'Pakiet "Sport OPC":<br />\
+Przedni zderzak OPC<br />\
+Tylny zderzak OPC<br />\
+Spojlery boczne OPC w kolorze nadwozia ',
     WLI: 'Moduł PowerFlex (wielofunkcyjny moduł, mocowany na konsoli centralnej, umożliwiający podłączenie akcesoriów)',
     WLQ: 'Uchwytem na smartfona',
     WPG: 'Pakiet "Wygodny"',
@@ -910,4 +916,16 @@ function prettyDate(dateString) {
   var y = date.getFullYear();
 
   return y + '-' + m + '-' + d;
+}
+
+function getColour(optionCodes, defaultColour) {
+  var colours = ['G6R', 'G7I', 'GAN', 'GAZ', 'GB9', 'GDB', 'GDX', 'GG7', 'GR5', 'GWD'];
+  if (optionCodes) {
+    for (var i = 0; i < colours; i++) {
+      if (-1 !== optionCodes.indexOf(colours[i])) {
+        return translate(colours[i]);
+      }
+    }
+  }
+  return defaultColour;
 }

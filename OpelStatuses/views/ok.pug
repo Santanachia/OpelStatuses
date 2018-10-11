@@ -12,10 +12,14 @@ block body
     thead
       tr
         th= details.make + ' ' + details.modelDescription
-        th= 'data rejestracji'
-        th= 'data pierwszej rejestacji'
-        th= 'numer rejestracyjny'
-        th= 'VIN'
+        - if (details.registrationDate)
+          th= 'data rejestracji'
+        - if (details.dateFirstRegistered)
+          th= 'data pierwszej rejestacji'
+        - if (details.registrationMark)
+          th= 'numer rejestracyjny'
+        - if (details.vin)
+          th= 'VIN'
         th= 'kolor'
         th= 'silnik'
         th= 'tapicerka'
@@ -23,14 +27,18 @@ block body
     tbody
       tr
         td= 'RM: ' + details.modelYearSuffix
-        td= details.registrationDate
-        td= details.dateFirstRegistered
-        td= details.registrationMark
-        td= details.vin
+        - if (details.registrationDate)
+          td= details.registrationDate
+        - if (details.dateFirstRegistered)
+          td= details.dateFirstRegistered
+        - if (details.registrationMark)
+          td= details.registrationMark
+        - if (details.vin)
+          td= details.vin
         td= details.colour
-        td= details.engineCode + ': ' + details.engineDescription
+        td!= details.engine
         td= details.tapicerka
-        td= details.onStarEquipped
+        td(style='font-weight:bold;color:green')!= details.onStarEquipped
 
   table.blue(style='float:left')
     caption(align='bottom')= 'ostatnia aktualizacja:' + lastModified
@@ -63,10 +71,9 @@ block body
   table.blue(style='float:left')
     thead
       tr
-        th= 'Wyposażenie'
-        th
-          span#show(onclick="document.getElementById('options').style.display = ''; document.getElementById('show').style.display = 'none'; document.getElementById('hide').style.display = '';") pokaż
-          span#hide(onclick="document.getElementById('options').style.display = 'none'; document.getElementById('show').style.display = ''; document.getElementById('hide').style.display = 'none';", style={display: 'none'}) ukryj
+        th(colspan=2)
+          span#show(onclick="document.getElementById('options').style.display = ''; document.getElementById('show').style.display = 'none'; document.getElementById('hide').style.display = '';") Pokaż wyposażenie
+          span#hide(onclick="document.getElementById('options').style.display = 'none'; document.getElementById('show').style.display = ''; document.getElementById('hide').style.display = 'none';", style={display: 'none'}) Ukryj wyposażenie
     tbody#options(style={display: 'none'})
       tr
         th= 'kod'
@@ -74,4 +81,4 @@ block body
       each row in options
         tr
           td= row.key
-          td= row.name
+          td!= row.name
